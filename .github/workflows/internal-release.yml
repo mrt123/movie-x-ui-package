@@ -40,7 +40,7 @@ jobs:
       - name: build production artefacts
         env:
           NODE_ENV: staging
-        run: echo $NODE_ENV && npm run build
+        run: echo $NODE_ENV # no need to npm run buld, since ./dist is provided
       - run: cp package.json ./dist #package.json is required to be present
       - run: cp ./README.md ./dist
 
