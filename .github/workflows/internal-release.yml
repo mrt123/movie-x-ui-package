@@ -25,6 +25,9 @@ jobs:
         with:
           node-version: '20.11.1'
           registry-url: 'https://npm.pkg.github.com'
+          # NOTE: Optional scope for authenticating against scoped registries. 
+          # Will fall back to the repository owner when using the GitHub Packages registry (https://npm.pkg.github.com/).
+          # scope: '@custo-scope'
       - run: npm ci
 
       # NOTE: if npmPublish: false is set in release.config.js, only versioning of package.json and tagging will be performed
