@@ -39,13 +39,7 @@ jobs:
         run: npx semantic-release
         # Notice: Since npm package is not physically published, steps.semantic.outputs.new_release_version won't be populated
 
-      # bundling and publishing of package starts below this line
-      - name: build production artefacts
-        env:
-          NODE_ENV: staging
-        run: echo $NODE_ENV # no need to npm run buld, since ./dist is provided
-      - run: cp package.json ./dist #package.json is required to be present
-      - run: cp ./README.md ./dist
+      # no need to build, /dist will be provided
 
       # for publishing to github packages see: https://docs.github.com/en/actions/use-cases-and-examples/publishing-packages/publishing-nodejs-packages#publishing-packages-to-github-packages
       - name: publish internal npm package
