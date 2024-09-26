@@ -27,7 +27,7 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           # NOTE: Optional scope for authenticating against scoped registries. 
           # Will fall back to the repository owner when using the GitHub Packages registry (https://npm.pkg.github.com/).
-          # scope: '@custo-scope'
+          # scope: '@custom-scope'
       - run: npm ci
 
       # NOTE: if npmPublish: false is set in release.config.js, only versioning of package.json and tagging will be performed
@@ -62,7 +62,7 @@ jobs:
         uses: keithweaver/aws-s3-github-action@v1.0.0
         with:
           command: 'sync'
-          source: ./dist/out
+          source: ./dist # we send dist files only (no other package files are sent)
           destination: "s3://movies-dev-site/${{ steps.package-version.outputs.current-version }}/"
           aws_access_key_id: ${{ secrets.AWS_S3_UPLOADER_ACCESS_KEY }}
           aws_secret_access_key: ${{ secrets.AWS_S3_UPLOADER_SECRET_ACCESS_KEY }}
