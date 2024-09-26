@@ -1,0 +1,30 @@
+name: 'Prepare Nodejs environment'
+description: 'Setups node and returns node-modules-cache-hit output, only when cache identified by key based on current package-lock.json hash exists'
+# this action is not used yet. Its recommended to be used to speed up PR Job
+outputs:
+  node-modules-cache-hit:
+    description: 'Cache hit output'
+    value: ${{ steps.cache-hit.outputs.cache-hit }}
+
+runs:
+  using: 'composite'
+  steps:
+    # checkout code to get access to package-lock.json
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Set up Node.js # this will be cached and not downloaded on subsequent runs (other jobs may access this)
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.11.1'
+    - name: Restore cached # restores both node_modules and cache for setup-node@v3 (which also uses actions/cache@v3 underneath)
+      # it is assumed that developer has committed updated package-lock correctly each time.
+      id: restore-cache
+      uses: actions/cache@v3
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-modules-
+    - id: cache-hit
+      run: echo "cache-hit=$(echo ${{ steps.restore-cache.outputs.cache-hit }})" >> $GITHUB_OUTPUT
+      shell: bash
