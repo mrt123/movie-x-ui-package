@@ -44,6 +44,7 @@ jobs:
       - run: cp package.json ./dist #package.json is required to be present
       - run: cp ./README.md ./dist
 
+      # for publishing to github packages see: https://docs.github.com/en/actions/use-cases-and-examples/publishing-packages/publishing-nodejs-packages#publishing-packages-to-github-packages
       - name: publish internal npm package
         run: cd dist && npm publish
         env:
