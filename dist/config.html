@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <style>
+      .container {
+        width: 500px;
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <label for="key">key</label>
+      <input id="key" value="" />
+      <br />
+      <label for="sec">sec</label>
+      <input id="sec" value="" />
+      <br />
+      <button onClick="saveConfigToStorage()">SAVE CONFIG</button>
+      <br />
+      <a href="./">Go to main page</a>
+    </div>
+  </body>
+
+  <script>
+    const saveConfigToStorage = (e) => {
+      const keyInputValue = document.getElementById("key").value;
+      const secInputValue = document.getElementById("sec").value;
+      const config = {
+        key: keyInputValue,
+        sec: secInputValue,
+      };
+      console.log("Config saved", config);
+
+      localStorage.setItem("config", JSON.stringify(config));
+      alert("Config saved, try going to main page.");
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const storedConfig = JSON.parse(localStorage.getItem("config"));
+
+      if (storedConfig && storedConfig.key) {
+        document.getElementById("key").value = storedConfig.key;
+      }
+      if (storedConfig && storedConfig.sec)
+        document.getElementById("sec").value = storedConfig.sec;
+    });
+  </script>
+</html>
