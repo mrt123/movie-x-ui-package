@@ -41,9 +41,10 @@ jobs:
 
       # no need to build, /dist will be provided
 
+      # TODO: might replace separate publish step, and allow semantic release to publish
       # for publishing to github packages see: https://docs.github.com/en/actions/use-cases-and-examples/publishing-packages/publishing-nodejs-packages#publishing-packages-to-github-packages
       - name: publish internal npm package
-        run: cd dist && npm publish
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
