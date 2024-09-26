@@ -27,13 +27,14 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
       - run: npm ci
 
-      - name: Create semantic release  # if npmPublish: false is set in release config, only versioning of package.json and tagging will be performed
+      # NOTE: if npmPublish: false is set in release.config.js, only versioning of package.json and tagging will be performed
+      - name: Create semantic release  
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
-        # Notice: if npm package is not physically published steps.semantic.outputs.new_release_version won't be populated
+        # Notice: Since npm package is not physically published, steps.semantic.outputs.new_release_version won't be populated
 
       # bundling and publishing of package starts below this line
       - name: build production artefacts
