@@ -61,7 +61,7 @@ jobs:
           destination: "s3://movies-dev-site/${{ steps.package-version.outputs.current-version }}/"
           aws_access_key_id: ${{ secrets.AWS_S3_UPLOADER_ACCESS_KEY }}
           aws_secret_access_key: ${{ secrets.AWS_S3_UPLOADER_SECRET_ACCESS_KEY }}
-          aws_region: eu-east-1
+          aws_region: us-east-1
 
       - name: Report deployment URL
         run: echo "deployed to https://d3mgsd0qc669bh.cloudfront.net/$DEPLOY_URL"
