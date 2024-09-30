@@ -29,8 +29,9 @@
   <script>
     const clearLocalStorage = () => {
       localStorage.clear();
-      window.location.replace("/");
       alert("Local storage was cleared. You will now go to home page!");
+      const newPath = location.pathname.replace("config.html", "");
+      window.location.replace(newPath);
     };
 
     const saveConfigToStorage = (e) => {
