@@ -20,10 +20,19 @@
       <button onClick="saveConfigToStorage()">SAVE CONFIG</button>
       <br />
       <a href="./">Go to main page</a>
+      <br />
+      <br />
+      <button onClick="clearLocalStorage()">CLEAR LOCAL STORAGE</button>
     </div>
   </body>
 
   <script>
+    const clearLocalStorage = () => {
+      localStorage.clear();
+      window.location.replace("/");
+      alert("Local storage was cleared. You will now go to home page!");
+    };
+
     const saveConfigToStorage = (e) => {
       const keyInputValue = document.getElementById("key").value;
       const secInputValue = document.getElementById("sec").value;
