@@ -68,15 +68,8 @@ jobs:
         env:
           DEPLOY_URL: ${{ steps.package-version.outputs.current-version}}
 
-  publish-latest:
-    name: Publish "latest" to S3 bucket
-    runs-on: ubuntu-latest
-    permissions:
-      deployments: write # to update deployment status
-      statuses: write # to update job status
-    steps:
       - name: Deploy latest to S3
-        id: S3-uploadzzz
+        id: S3-upload-to-latest
         uses: keithweaver/aws-s3-github-action@v1.0.0
         with:
           command: "sync"
