@@ -23,15 +23,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20.11.1'
-          registry-url: 'https://npm.pkg.github.com'
-          # NOTE: Optional scope for authenticating against scoped registries. 
+          node-version: "20.11.1"
+          registry-url: "https://npm.pkg.github.com"
+          # NOTE: Optional scope for authenticating against scoped registries.
           # Will fall back to the repository owner when using the GitHub Packages registry (https://npm.pkg.github.com/).
           # scope: '@custom-scope'
       - run: npm ci
 
       # NOTE: if npmPublish: false is set in release.config.js, only versioning of package.json and tagging will be performed
-      - name: Create semantic release  
+      - name: Create semantic release
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -52,11 +52,11 @@ jobs:
         id: package-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
 
-      - name: Deploy to S3
+      - name: Deploy specific version to S3 bucket
         id: S3-upload
         uses: keithweaver/aws-s3-github-action@v1.0.0
         with:
-          command: 'sync'
+          command: "sync"
           source: ./dist # we send dist files only (no other package files are sent)
           destination: "s3://movies-dev-site/${{ steps.package-version.outputs.current-version }}/"
           aws_access_key_id: ${{ secrets.AWS_S3_UPLOADER_ACCESS_KEY }}
@@ -68,6 +68,20 @@ jobs:
         env:
           DEPLOY_URL: ${{ steps.package-version.outputs.current-version}}
 
-
-
-
+  publish-latest:
+    name: Publish "latest" to S3 bucket
+    runs-on: ubuntu-latest
+    permissions:
+      deployments: write # to update deployment status
+      statuses: write # to update job status
+    steps:
+      - name: Deploy latest to S3
+        id: S3-uploadzzz
+        uses: keithweaver/aws-s3-github-action@v1.0.0
+        with:
+          command: "sync"
+          source: ./dist # we send dist files only (no other package files are sent)
+          destination: "s3://movies-dev-site/latest/"
+          aws_access_key_id: ${{ secrets.AWS_S3_UPLOADER_ACCESS_KEY }}
+          aws_secret_access_key: ${{ secrets.AWS_S3_UPLOADER_SECRET_ACCESS_KEY }}
+          aws_region: us-east-1
