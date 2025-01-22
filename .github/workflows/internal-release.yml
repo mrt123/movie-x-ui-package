@@ -24,6 +24,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "20.11.1"
+          cache: "npm"
           registry-url: "https://npm.pkg.github.com"
           # NOTE: Optional scope for authenticating against scoped registries.
           # Will fall back to the repository owner when using the GitHub Packages registry (https://npm.pkg.github.com/).
@@ -52,29 +53,17 @@ jobs:
         id: package-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
 
-      - name: Deploy specific version to S3 bucket
-        id: S3-upload
-        uses: keithweaver/aws-s3-github-action@v1.0.0
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
         with:
-          command: "sync"
-          source: ./dist # we send dist files only (no other package files are sent)
-          destination: "s3://movies-dev-site/${{ steps.package-version.outputs.current-version }}/"
-          aws_access_key_id: ${{ secrets.AWS_S3_UPLOADER_ACCESS_KEY }}
-          aws_secret_access_key: ${{ secrets.AWS_S3_UPLOADER_SECRET_ACCESS_KEY }}
-          aws_region: us-east-1
+          aws-access-key-id: ${{ secrets.AWS_S3_UPLOADER_ACCESS_KEY }} # when given chance change these to : AWS_ACCESS_KEY_ID & AWS_SECRET_ACCESS_KEY in github (this way there will be no need to define them here)
+          aws-secret-access-key: ${{ secrets.AWS_S3_UPLOADER_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
-      - name: Report deployment URL
-        run: echo "deployed to https://d3mgsd0qc669bh.cloudfront.net/$DEPLOY_URL"
-        env:
-          DEPLOY_URL: ${{ steps.package-version.outputs.current-version}}
+      - name: "Deploy specific version to S3 bucket"
+        run: |
+          echo "deploying to https://d3mgsd0qc669bh.cloudfront.net/${{ steps.package-version.outputs.current-version}}"
+          aws s3 sync ./dist s3://movies-dev-site/${{ steps.package-version.outputs.current-version }}/ --delete
 
-      - name: Deploy latest to S3
-        id: S3-upload-to-latest
-        uses: keithweaver/aws-s3-github-action@v1.0.0
-        with:
-          command: "sync"
-          source: ./dist # we send dist files only (no other package files are sent)
-          destination: "s3://movies-dev-site/latest/"
-          aws_access_key_id: ${{ secrets.AWS_S3_UPLOADER_ACCESS_KEY }}
-          aws_secret_access_key: ${{ secrets.AWS_S3_UPLOADER_SECRET_ACCESS_KEY }}
-          aws_region: us-east-1
+      - name: "Deploy latest to S3"
+        run: aws s3 sync ./dist s3://movies-dev-site/latest/ --delete
